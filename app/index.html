@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leonida Platinum — GTA 6 Trophy Guide &amp; Tracker</title>
+<meta name="description" content="Offline guide and tracker for all 55 GTA 6 trophies on PlayStation 5: checklist, roadmap to the platinum, missable flags and a cited guide for every trophy.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-title">
+    <p class="kicker">Grand Theft Auto VI &middot; PlayStation 5 &middot; 55 trophies</p>
+    <h1>Leonida Platinum</h1>
+    <p class="subtitle">The offline trophy guide &amp; tracker — every official trophy, a roadmap to the platinum, and a cited guide for each one. No network needed: everything on this page is a file in this app.</p>
+  </div>
+  <div class="medals" aria-label="Trophy counts by grade">
+    <div class="medal platinum"><span class="medal-dot"></span><strong>1</strong> Platinum</div>
+    <div class="medal gold"><span class="medal-dot"></span><strong>2</strong> Gold</div>
+    <div class="medal silver"><span class="medal-dot"></span><strong>6</strong> Silver</div>
+    <div class="medal bronze"><span class="medal-dot"></span><strong>46</strong> Bronze</div>
+  </div>
+</header>
+
+<section class="progress" aria-label="Overall progress">
+  <div class="progress-line">
+    <strong id="progressText">0 of 55 earned</strong>
+    <span id="progressDetail">Platinum: 0% — 55 to go</span>
+  </div>
+  <div class="progress-bar"><div id="progressFill" style="width:0%"></div></div>
+  <p class="progress-note">Progress is saved in this browser (localStorage). Export it to a file before clearing browser data — import it back any time.</p>
+</section>
+
+<nav class="tabs" aria-label="Guide sections">
+  <button type="button" class="tab active" data-view="checklist">Checklist</button>
+  <button type="button" class="tab" data-view="roadmap">Roadmap to Platinum</button>
+  <button type="button" class="tab" data-view="missables">Missables — 7 to watch</button>
+</nav>
+
+<section class="controls" aria-label="Filters and settings">
+  <label class="control search">Search <input id="search" type="search" placeholder="Name or description…" autocomplete="off"></label>
+  <label class="control">Kind
+    <select id="kind">
+      <option value="all">All kinds</option>
+      <option value="story">Story</option>
+      <option value="missable">Missable</option>
+      <option value="collectibles">Collectibles</option>
+      <option value="activities">Activities</option>
+      <option value="online">Online</option>
+    </select>
+  </label>
+  <label class="control">Grade
+    <select id="grade">
+      <option value="all">All grades</option>
+      <option value="platinum">Platinum</option>
+      <option value="gold">Gold</option>
+      <option value="silver">Silver</option>
+      <option value="bronze">Bronze</option>
+    </select>
+  </label>
+  <label class="control check"><input id="hideEarned" type="checkbox"> Hide earned</label>
+  <label class="control check spoiler"><input id="spoiler" type="checkbox"> Spoiler-free: hide story trophies until earned</label>
+  <span class="control buttons">
+    <button id="export" type="button">Export progress</button>
+    <label class="import-btn">Import progress <input id="import" type="file" accept="application/json,.json"></label>
+    <button id="reset" type="button">Reset</button>
+  </span>
+</section>
+
+<main class="layout">
+  <section id="view-checklist" class="view">
+    <p id="listCount" class="list-count"></p>
+    <p id="onlineNote" class="online-note" hidden>The official list has no online trophies: every one of the 55 can be earned offline, in single-player. This filter is here because the brief asks for it — it correctly shows nothing.</p>
+    <ul id="rows" class="trophy-list"></ul>
+  </section>
+
+  <section id="view-roadmap" class="view" hidden>
+    <h2>Roadmap to the platinum</h2>
+    <p class="view-intro">Built from the official descriptions alone: which story chapters and missions, which collectibles and counts, in what order. Five stages, in order — finish one before the next where the stage says so.</p>
+    <ol id="roadmap" class="roadmap"></ol>
+    <p class="roadmap-note">Chapter trophies (Chapters 1–4 and the final mission) cannot be missed: finishing the story earns them. The 7 missable trophies are the ones tied to a single moment — see the Missables tab.</p>
+  </section>
+
+  <section id="view-missables" class="view" hidden>
+    <h2>Missable trophies — 7 to watch</h2>
+    <p class="view-intro">A trophy is flagged missable here when its official description ties it to a single moment that may not repeat — a partner moment, a one-spot stunt, a single retry, or a strange one-off event. If you pass that moment without it, replay the mission or start a new game. Everything else is repeatable or awarded for finishing the story. These flags are inferred from the official descriptions, not confirmed in-game.</p>
+    <ul id="missableRows" class="trophy-list"></ul>
+  </section>
+
+  <aside id="detail" class="detail" aria-label="Trophy guide">
+    <p class="detail-empty">Select a trophy on the left to read its guide, steps and sources.</p>
+  </aside>
+</main>
+
+<footer class="sources">
+  <h2>Sources &amp; honesty note</h2>
+  <p>Official names, descriptions and grades: the official PlayStation 5 trophy list as published on <a href="https://www.exophase.com/game/grand-theft-auto-vi-psn/trophies/">Exophase</a>, cross-checked against <a href="https://psnprofiles.com/trophies/43531-grand-theft-auto-vi">PSNProfiles</a> (the two agree on every name, description and grade; PSNProfiles also gives the progress targets, such as 42 Shooting Range challenges). Every guide in this app is written in our own words for this entry from those official descriptions, and cites its sources beside it. Where a place or step is not pinned down by the official description, the guide says so instead of inventing one — no guide text here is copied from another guide. The game was days old when this guide was written and its advice has not been checked in-game. This guide is unofficial, uses no Rockstar Games logo or artwork, and is not affiliated with Rockstar Games or PlayStation.</p>
+  <p>Works fully offline: this app loads only its own files and makes no network request at run time.</p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
