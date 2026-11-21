@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leonida Platinum — GTA 6 Trophy Guide &amp; Tracker</title>
-<meta name="description" content="Offline guide and tracker for all 55 GTA 6 trophies on PlayStation 5: checklist, roadmap to the platinum, missable flags and a cited guide for every trophy.">
+<meta name="description" content="Offline guide and tracker for all 55 GTA 6 trophies on PlayStation 5: checklist, a Next up planner, roadmap to the platinum, missable flags and a cited guide for every trophy.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <div class="masthead-title">
     <p class="kicker">Grand Theft Auto VI &middot; PlayStation 5 &middot; 55 trophies</p>
     <h1>Leonida Platinum</h1>
-    <p class="subtitle">The offline trophy guide &amp; tracker — every official trophy, a roadmap to the platinum, and a cited guide for each one. No network needed: everything on this page is a file in this app.</p>
+    <p class="subtitle">The offline trophy guide &amp; tracker — every official trophy, a Next up plan for what to do now, a roadmap to the platinum, and a cited guide for each one. No network needed: everything on this page is a file in this app.</p>
   </div>
   <div class="medals" aria-label="Trophy counts by grade">
     <div class="medal platinum"><span class="medal-dot"></span><strong>1</strong> Platinum</div>
@@ -33,6 +33,7 @@
 
 <nav class="tabs" aria-label="Guide sections">
   <button type="button" class="tab active" data-view="checklist">Checklist</button>
+  <button type="button" class="tab" data-view="planner">Next up</button>
   <button type="button" class="tab" data-view="roadmap">Roadmap to Platinum</button>
   <button type="button" class="tab" data-view="missables">Missables — 7 to watch</button>
 </nav>
@@ -74,9 +75,16 @@
     <ul id="rows" class="trophy-list"></ul>
   </section>
 
+  <section id="view-planner" class="view" hidden>
+    <h2>Next up — what to do now</h2>
+    <p class="view-intro">Your plan, in order: the missable trophies first, because they can be lost; then the trophies of your current roadmap stage; then the rest, in stage order. Tick one off and the plan moves on. Click any row to open its guide.</p>
+    <p id="plannerCount" class="list-count"></p>
+    <ol id="planner" class="planner-list"></ol>
+  </section>
+
   <section id="view-roadmap" class="view" hidden>
     <h2>Roadmap to the platinum</h2>
-    <p class="view-intro">Built from the official descriptions alone: which story chapters and missions, which collectibles and counts, in what order. Five stages, in order — finish one before the next where the stage says so.</p>
+    <p class="view-intro">Built from the official descriptions alone: which story chapters and missions, which collectibles and counts, in what order. Five stages, in order — finish one before the next where the stage says so. Each stage shows how far you are through it.</p>
     <ol id="roadmap" class="roadmap"></ol>
     <p class="roadmap-note">Chapter trophies (Chapters 1–4 and the final mission) cannot be missed: finishing the story earns them. The 7 missable trophies are the ones tied to a single moment — see the Missables tab.</p>
   </section>

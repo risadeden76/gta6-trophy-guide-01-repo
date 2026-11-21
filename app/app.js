@@ -1,11 +1,14 @@
 // Leonida Platinum boot: loads app/data/trophies.json, renders the checklist,
-// the roadmap, the missables page and the guide detail pane, and wires the tracker.
+// the Next up planner, the roadmap, the missables page and the guide detail
+// pane, and wires the tracker.
 import { loadProgress, saveProgress, exportProgress, importProgressFile, earnedCount, progressPercent } from './store.js';
 import { filterTrophies, isSpoilerHidden, spoilerLabel } from './filters.js';
-import { ROADMAP_STAGES, missableTrophies, missableReason, stageForTrophy } from './roadmap.js';
+import { ROADMAP_STAGES, missableTrophies, missableReason, stageForTrophy, stageProgress, nextUpList } from './roadmap.js';
 
 const DATA_URL = 'data/trophies.json';
 const rowsEl = document.getElementById('rows');
+const plannerEl = document.getElementById('planner');
+const plannerCountEl = document.getElementById('plannerCount');
 const detailEl = document.getElementById('detail');
 const listCountEl = document.getElementById('listCount');
 const onlineNoteEl = document.getElementById('onlineNote');
@@ -30,6 +33,8 @@ function saveAndRender() {
   saveProgress(progress);
   renderProgress();
   renderList();
+  renderPlanner();
+  renderRoadmap();
   renderMissables();
   if (state.selected) renderDetail(state.selected);
 }
@@ -45,6 +50,12 @@ function renderProgress() {
 
 function gradeLabel(grade) {
   return grade.charAt(0).toUpperCase() + grade.slice(1);
+}
+
+function groupLabel(group) {
+  if (group === 'missable') return 'Missable first';
+  if (group === 'current') return 'Current stage';
+  return 'Later';
 }
 
 function trophyRow(trophy) {
@@ -102,14 +113,17 @@ function trophyRow(trophy) {
   gradeSide.textContent = hidden ? '???' : gradeLabel(trophy.grade);
 
   li.append(box, main, gradeSide);
-  li.addEventListener('click', () => {
-    state.selected = trophy.name;
-    renderList();
-    renderMissables();
-    renderDetail(trophy.name);
-    detailEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  });
+  li.addEventListener('click', () => selectTrophy(trophy.name));
   return li;
+}
+
+function selectTrophy(name) {
+  state.selected = name;
+  renderList();
+  renderPlanner();
+  renderMissables();
+  renderDetail(name);
+  detailEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function renderList() {
@@ -122,6 +136,53 @@ function renderList() {
   onlineNoteEl.hidden = state.kind !== 'online';
 }
 
+function renderPlanner() {
+  const entries = nextUpList(trophies, earnedSet());
+  const earned = earnedCount(progress, trophies);
+  plannerCountEl.textContent = entries.length === 0
+    ? 'All 55 trophies earned — the platinum is yours.'
+    : `${entries.length} to go — ${earned} earned. Missables first, then your current stage, then the rest in stage order.`;
+  if (entries.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'planner-empty';
+    empty.textContent = 'Nothing left to plan — every trophy is earned.';
+    plannerEl.replaceChildren(empty);
+    return;
+  }
+  plannerEl.replaceChildren(...entries.map((entry, index) => {
+    const trophy = entry.trophy;
+    const li = document.createElement('li');
+    li.className = `planner-item group-${entry.group}` + (state.selected === trophy.name ? ' selected' : '');
+    const hidden = isSpoilerHidden(trophy, state.spoiler, earnedSet());
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = earnedSet().has(trophy.name);
+    box.setAttribute('aria-label', `Mark ${trophy.name} earned`);
+    box.addEventListener('change', (event) => {
+      event.stopPropagation();
+      toggleEarned(trophy.name, box.checked);
+    });
+    box.addEventListener('click', (event) => event.stopPropagation());
+    const rank = document.createElement('span');
+    rank.className = 'planner-rank';
+    rank.textContent = String(index + 1);
+    const main = document.createElement('div');
+    const name = document.createElement('div');
+    name.className = 'planner-name';
+    name.textContent = hidden ? 'Hidden story trophy' : trophy.name;
+    const why = document.createElement('div');
+    why.className = 'planner-why';
+    why.textContent = hidden ? spoilerLabel(trophy) : `${entry.reason} — ${trophy.description}`;
+    main.append(name, why);
+    const group = document.createElement('span');
+    group.className = 'planner-group';
+    group.textContent = groupLabel(entry.group);
+    li.append(box, rank, main, group);
+    li.addEventListener('click', () => selectTrophy(trophy.name));
+    return li;
+  }));
+}
+
 function renderMissables() {
   const list = document.getElementById('missableRows');
   list.replaceChildren(...missableTrophies(trophies).map(trophyRow));
@@ -130,11 +191,24 @@ function renderMissables() {
 function renderRoadmap() {
   const list = document.getElementById('roadmap');
   list.replaceChildren(...ROADMAP_STAGES.map((stage) => {
+    const done = stageProgress(stage, trophies, earnedSet());
     const li = document.createElement('li');
-    li.className = 'stage';
+    li.className = 'stage' + (done.earned === done.total ? ' done' : '');
     const title = document.createElement('h3');
     title.className = 'stage-title';
     title.textContent = stage.title;
+    const progressLine = document.createElement('div');
+    progressLine.className = 'stage-progress';
+    const counts = document.createElement('span');
+    counts.textContent = `${done.earned} of ${done.total} earned`;
+    const pct = document.createElement('span');
+    pct.textContent = `${done.pct}%`;
+    progressLine.append(counts, pct);
+    const bar = document.createElement('div');
+    bar.className = 'stage-bar';
+    const fill = document.createElement('div');
+    fill.style.width = `${done.pct}%`;
+    bar.append(fill);
     const text = document.createElement('p');
     text.textContent = stage.text;
     const ul = document.createElement('ul');
@@ -145,7 +219,7 @@ function renderRoadmap() {
       item.textContent = `${earned ? '✓ ' : ''}${name}${trophy && trophy.missable ? ' — Missable' : ''}${trophy && trophy.count ? ` (${trophy.count.toLocaleString('en-US')} ${trophy.countLabel ?? ''})`.trim() : ''}`;
       ul.append(item);
     }
-    li.append(title, text, ul);
+    li.append(title, progressLine, bar, text, ul);
     return li;
   }));
 }
@@ -252,6 +326,7 @@ function switchView(view) {
     button.classList.toggle('active', button.dataset.view === view);
   }
   document.getElementById('view-checklist').hidden = view !== 'checklist';
+  document.getElementById('view-planner').hidden = view !== 'planner';
   document.getElementById('view-roadmap').hidden = view !== 'roadmap';
   document.getElementById('view-missables').hidden = view !== 'missables';
   document.querySelector('.controls').style.display = view === 'checklist' || view === 'missables' ? '' : 'none';
@@ -271,6 +346,7 @@ async function boot() {
   spoilerEl.addEventListener('change', () => {
     state.spoiler = spoilerEl.checked;
     renderList();
+    renderPlanner();
     renderMissables();
     if (state.selected) renderDetail(state.selected);
   });
@@ -299,6 +375,7 @@ async function boot() {
   });
   renderProgress();
   renderList();
+  renderPlanner();
   renderRoadmap();
   renderMissables();
 }

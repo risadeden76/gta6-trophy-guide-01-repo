@@ -2,13 +2,13 @@
 // The guide is this directory's app/ folder: plain static files a browser opens at
 // app/index.html (ES modules, CSS, no build step), offline — it loads nothing over the
 // network, and its trophy list and guides are app/data/trophies.json (55 official
-// trophies, each with a guide in our own words that cites its sources, a roadmap to
-// the platinum and the missable flags). The program hands it in: it copies app/ and
-// screenshots/ from beside this file to /output and writes /output/dossier.json, the
-// summary the judge reads (your screenshots, the first load's files and bytes, and
-// your source), with the vendored make.fun library. Leave vendor/makefun-frontend.ts
-// as it is: the scorer requires dossier.json to be byte for byte what its own copy
-// writes.
+// trophies, each with a guide in our own words that cites its sources, a Next up
+// planner that orders what to do now, a roadmap to the platinum and the missable
+// flags). The program hands it in: it copies app/ and screenshots/ from beside
+// this file to /output and writes /output/dossier.json, the summary the judge
+// reads (your screenshots, the first load's files and bytes, and your source),
+// with the vendored make.fun library. Leave vendor/makefun-frontend.ts as it is:
+// the scorer requires dossier.json to be byte for byte what its own copy writes.
 //
 // Serve it locally with `node serve.ts`, then open http://localhost:8080.
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:

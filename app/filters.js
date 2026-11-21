@@ -1,6 +1,7 @@
-// Filters: kind, grade, search text, hide-earned, and the spoiler rule.
-// Kinds the brief asks for: story, missable, collectibles, activities, online.
-// The official list has no online trophies, so the online filter correctly matches none.
+// Checklist filters: kind, grade, search text and hide-earned, plus the
+// spoiler rule. Kinds the brief asks for: story, missable, collectibles,
+// activities, online. The official list has no online trophies, so the online
+// filter correctly matches none.
 export const KIND_LABELS = {
   story: 'Story',
   missable: 'Missable',

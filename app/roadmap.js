@@ -1,5 +1,6 @@
-// Roadmap and missables: built from the official descriptions alone —
+// Roadmap and missables, built from the official descriptions alone:
 // which story chapters and missions, which collectibles and counts, in what order.
+// The planner in app.js reads the same stages to say what to do next.
 export const ROADMAP_STAGES = [
   {
     stage: 1,
@@ -61,4 +62,52 @@ export function missableReason(trophy) {
     return 'A one-off strange event — it may not repeat, so watch for it while exploring.';
   }
   return 'Tied to a single moment in the game — try it when the moment comes.';
+}
+
+// How far a stage is: earned of its trophies, as a whole percent.
+export function stageProgress(stage, trophies, earnedSet) {
+  const names = stage.trophies.filter((name) => trophies.some((t) => t.name === name));
+  const total = names.length;
+  const earned = names.filter((name) => earnedSet.has(name)).length;
+  return { earned, total, pct: total ? Math.round((earned / total) * 100) : 0 };
+}
+
+// The first stage that still has unearned trophies — where the player is now.
+export function currentStage(trophies, earnedSet) {
+  return ROADMAP_STAGES.find((stage) => stageProgress(stage, trophies, earnedSet).earned < stageProgress(stage, trophies, earnedSet).total) ?? null;
+}
+
+// Next up: what to do now, in order. Missables first (they can be lost), then
+// the trophies of the current roadmap stage, then everything else in stage order.
+// Each entry carries its trophy, why it is next, and which group it came from.
+export function nextUpList(trophies, earnedSet) {
+  const unearned = trophies.filter((t) => !earnedSet.has(t.name));
+  const current = currentStage(trophies, earnedSet);
+  const entries = [];
+  const seen = new Set();
+  const push = (trophy, reason, group) => {
+    if (seen.has(trophy.name)) return;
+    seen.add(trophy.name);
+    entries.push({ trophy, reason, group });
+  };
+  for (const trophy of unearned.filter((t) => t.missable)) {
+    push(trophy, `Missable — ${missableReason(trophy)}`, 'missable');
+  }
+  if (current) {
+    for (const name of current.trophies) {
+      const trophy = unearned.find((t) => t.name === name);
+      if (trophy) push(trophy, `Current stage — ${current.title}`, 'current');
+    }
+  }
+  for (const stage of ROADMAP_STAGES) {
+    for (const name of stage.trophies) {
+      const trophy = unearned.find((t) => t.name === name);
+      if (trophy) push(trophy, stage.title, 'upcoming');
+    }
+  }
+  for (const trophy of unearned) {
+    const stage = stageForTrophy(trophy);
+    push(trophy, stage ? stage.title : 'No roadmap stage', 'upcoming');
+  }
+  return entries;
 }
